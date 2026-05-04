@@ -10,6 +10,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-primary: #1E3A8A;
+  --color-secondary: #10B981;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +25,19 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Global Form Input Styles for better visibility */
+input, select, textarea {
+  color: #111827 !important; /* Deep black for visibility */
+  background-color: #ffffff !important; /* White background */
+}
+
+/* Dark mode support for inputs */
+@media (prefers-color-scheme: dark) {
+  input, select, textarea {
+    color: #ffffff !important;
+    background-color: #1f2937 !important; /* Dark grey background */
+    border-color: #374151 !important;
+  }
 }
