@@ -8,6 +8,7 @@ import { Users, LayoutDashboard, Database, Trophy } from 'lucide-react';
 interface Student {
   id: string;
   name: string;
+  full_name?: string;
   leetcode_username: string;
   leetcode_solved: number;
   github_repos: number;

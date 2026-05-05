@@ -8,13 +8,21 @@ const TECHNICAL_KEYWORDS = [
   'web development', 'interview prep', 'system design', 'javascript', 
   'java', 'python', 'react', 'database', 'striver', 'love babbar', 'freecodecamp',
   'backend', 'frontend', 'fullstack', 'machine learning', 'devops',
-  'linked list', 'dsa', 'interview', 'tutorial'
+  'linked list', 'dsa', 'interview', 'tutorial', 'recursion', 'dynamic programming',
+  'graph', 'tree', 'binary search', 'sorting', 'searching', 'bit manipulation',
+  'oops', 'sql', 'mongodb', 'nodejs', 'express', 'nextjs', 'typescript', 'html', 'css',
+  'docker', 'kubernetes', 'aws', 'azure', 'git', 'github', 'leetcode', 'gfg',
+  'codeforces', 'codechef', 'backtracking', 'heaps', 'trie', 'greedy', 'math',
+  'operating system', 'computer network', 'dbms', 'placement', 'engineering',
+  'software', 'developer', 'api', 'rest', 'graphql', 'sde sheet', 'a-z dsa', 'roadmap'
 ];
 
 const VERIFIED_EDUCATORS = [
-  'striver', 'takeuforward', 'loverbabbar', 'codewithharry', 'freecodecamp', 
-  'hiteshchoudhary', 'hitesh choudhary', 'akshat saini', 'codehelp', 'apna college', 
-  'traversy media', 'fireship', 'web dev simplified'
+  'striver', 'takeuforward', 'take u forward', 'loverbabbar', 'love babbar', 'codewithharry', 
+  'freecodecamp', 'hiteshchoudhary', 'hitesh choudhary', 'akshat saini', 'codehelp', 
+  'apna college', 'traversy media', 'fireship', 'web dev simplified', 'kunal kushwaha',
+  'anuj bhaiya', 'apni kaksha', 'gate smashers', 'jenny\'s lectures', 'telusko',
+  'edureka', 'simplilearn', 'my sirg', 'saurabh shukla', 'abdul bari', 'raj vikramaditya'
 ];
 
 const EXPLICITLY_ALLOWED_IDS = ['yVdKa8dnKiE'];
@@ -30,9 +38,10 @@ interface VideoPreview {
 
 interface VideoModuleProps {
   onValidatedAdd: (video: VideoPreview) => void;
+  isLoading?: boolean;
 }
 
-export const VideoModule: React.FC<VideoModuleProps> = ({ onValidatedAdd }) => {
+export const VideoModule: React.FC<VideoModuleProps> = ({ onValidatedAdd, isLoading }) => {
   const [url, setUrl] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -40,9 +49,9 @@ export const VideoModule: React.FC<VideoModuleProps> = ({ onValidatedAdd }) => {
   const [preview, setPreview] = useState<VideoPreview | null>(null);
 
   const getYouTubeId = (url: string): string | null => {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
     const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
+    return match ? match[1] : null;
   };
 
   const validateEducationalContent = (url: string, videoTitle: string, authorName: string = '', videoId: string = '') => {
@@ -119,7 +128,7 @@ export const VideoModule: React.FC<VideoModuleProps> = ({ onValidatedAdd }) => {
       // Fallback if API fails: validate based on user input
       const isEducational = validateEducationalContent(url, title, '', videoId);
       if (!isEducational) {
-        setError("Could not verify content. Please ensure it's an educational video.");
+        setError("Firewall verification required: The system couldn't automatically verify this content. Please provide a clear technical title (e.g., 'React Hooks Tutorial') to proceed.");
         setIsValidating(false);
         return;
       }
@@ -187,10 +196,10 @@ export const VideoModule: React.FC<VideoModuleProps> = ({ onValidatedAdd }) => {
 
             <button
               type="submit"
-              disabled={isValidating || !url}
+              disabled={isValidating || isLoading || !url}
               className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold shadow-xl shadow-slate-200 hover:bg-slate-800 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {isValidating ? (
+              {isValidating || isLoading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>Validate & Add Content</>
@@ -259,9 +268,10 @@ export const VideoModule: React.FC<VideoModuleProps> = ({ onValidatedAdd }) => {
                   </div>
                   <button
                     onClick={handleConfirm}
-                    className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-100 whitespace-nowrap"
+                    disabled={isLoading}
+                    className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-100 whitespace-nowrap disabled:opacity-50"
                   >
-                    Confirm & Add
+                    {isLoading ? 'Adding...' : 'Confirm & Add'}
                   </button>
                 </div>
               </motion.div>

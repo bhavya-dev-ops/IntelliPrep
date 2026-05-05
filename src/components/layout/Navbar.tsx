@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '../ui/Button';
 import { useAuth } from '@/hooks/useAuth';
 import { signOut } from '@/lib/auth';
+import { User } from 'lucide-react';
 
 import { Logo } from '@/components/ui/Logo';
 
@@ -23,9 +24,14 @@ export const Navbar: React.FC = () => {
           <div className="w-20 h-8 bg-gray-200 animate-pulse rounded-md"></div>
         ) : session ? (
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-700 hidden sm:block">
-              {userData?.name || session.user.email} ({userData?.role || 'user'})
-            </span>
+            <Link href="/profile" className="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-black text-sm shadow-[0_5px_15px_rgba(37,99,235,0.3)] group-hover:scale-110 transition-all duration-300 border-2 border-white dark:border-gray-800">
+                {(userData?.name || 'User')[0].toUpperCase()}
+              </div>
+              <span className="hidden sm:block font-bold tracking-tight">
+                {userData?.name || 'User'}
+              </span>
+            </Link>
             <Link href={userData?.role === 'teacher' ? "/teacher-dashboard" : "/dashboard"}>
               <Button variant="outline" size="sm">Dashboard</Button>
             </Link>

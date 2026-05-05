@@ -8,7 +8,7 @@ import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer,
   PieChart, Pie, Cell, Tooltip
 } from 'recharts';
-import { Award, Zap, Globe, Github, Code, Sun, CloudRain, Thermometer, Clock, Play, FileText } from 'lucide-react';
+import { Award, Zap, Globe, Code, Clock, Play, FileText } from 'lucide-react';
 
 export default function PublicProfilePage() {
   const params = useParams();

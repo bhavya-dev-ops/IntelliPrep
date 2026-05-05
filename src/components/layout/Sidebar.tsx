@@ -18,6 +18,7 @@ export const Sidebar: React.FC = () => {
     { name: 'Notes', href: '/dashboard/notes', icon: '📝' },
     { name: 'A.I Report', href: '/dashboard/reports', icon: '🤖' },
     { name: 'Placement Sync', href: '/dashboard/leetcode', icon: '🚀' },
+    { name: 'Profile', href: '/profile', icon: '👤' },
   ];
 
   const teacherItems = [

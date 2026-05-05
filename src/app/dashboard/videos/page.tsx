@@ -7,6 +7,7 @@ import { logActivity } from '@/lib/activity';
 import { Card, CardBody } from '@/components/ui/Card';
 import { useRouter } from 'next/navigation';
 import { VideoModule } from '@/components/dashboard/VideoModule';
+import { AlertCircle } from 'lucide-react';
 
 export default function VideosPage() {
   const { user } = useAuth();
@@ -27,14 +28,19 @@ export default function VideosPage() {
     fetchMaterials();
   }, [user]);
 
+  const [error, setError] = useState<string | null>(null);
+
   const handleValidatedAdd = async (videoData: { title: string; url: string; thumbnail: string }) => {
     if (!user) return;
     
     setIsAdding(true);
+    setError(null);
     const added = await addMaterial(videoData.title, videoData.url, user.id, videoData.thumbnail);
     
     if (added) {
       setMaterials([added, ...materials]);
+    } else {
+      setError("Failed to add video to database. Please check your connection or try again.");
     }
     setIsAdding(false);
   };
@@ -64,8 +70,15 @@ export default function VideosPage() {
         </div>
       </div>
 
+      {error && (
+        <div className="p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm font-bold flex items-center gap-2">
+          <AlertCircle className="w-5 h-5" />
+          {error}
+        </div>
+      )}
+
       {/* Educational Video Firewall Module */}
-      <VideoModule onValidatedAdd={handleValidatedAdd} />
+      <VideoModule onValidatedAdd={handleValidatedAdd} isLoading={isAdding} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {materials.length === 0 ? (

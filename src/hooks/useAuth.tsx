@@ -21,9 +21,9 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   userData: null,
   loading: true,
-  refreshUserData: async () => {},
+  refreshUserData: async () => { },
   liveSeconds: 0,
-  setLiveSeconds: () => {},
+  setLiveSeconds: () => { },
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userData, setUserData] = useState<UserMetadata | null>(null);
   const [loading, setLoading] = useState(true);
   const [liveSeconds, setLiveSeconds] = useState(0);
-  
+
   const router = useRouter();
   const pathname = usePathname();
 

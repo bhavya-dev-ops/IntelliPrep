@@ -116,9 +116,9 @@ export async function addMaterial(title: string, url: string, userId: string, th
   return data;
 }
 
-// Helper to get YouTube ID for thumbnails
+// Helper to get YouTube ID for thumbnails (supports Shorts and standard URLs)
 function getYouTubeId(url: string) {
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
   const match = url.match(regExp);
-  return (match && match[2].length === 11) ? match[2] : null;
+  return match ? match[1] : null;
 }

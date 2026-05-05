@@ -15,6 +15,7 @@ interface Activity {
   github_repos: number;
   updated_at: string;
   sde_readiness: number;
+  study_time_seconds: number;
 }
 
 export default function ReviewInboxPage() {

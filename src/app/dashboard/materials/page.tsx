@@ -25,7 +25,6 @@ export default function MaterialsFilesPage() {
 
   // Timer logic when a file is opened
   useEffect(() => {
-    let interval: NodeJS.Timeout;
     if (selectedFile && user) {
       setStudyStartTime(Date.now());
       logActivity(user.id, 'material');
@@ -35,7 +34,6 @@ export default function MaterialsFilesPage() {
       updateStudyTime(user.id, secondsSpent);
       setStudyStartTime(null);
     }
-    return () => clearInterval(interval);
   }, [selectedFile]);
 
   async function updateStudyTime(userId: string, seconds: number) {

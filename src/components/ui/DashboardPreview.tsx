@@ -16,7 +16,7 @@ export const DashboardPreview: React.FC = () => {
           Your Dashboard Snapshot
         </h2>
         <div className="rounded-xl shadow-lg overflow-hidden">
-          <ActivityHeatmap days={365} />
+          <ActivityHeatmap />
         </div>
         <p className="mt-6 text-center text-gray-600">
           Your personalized heatmap shows daily study activity – videos watched, notes created, and materials opened.

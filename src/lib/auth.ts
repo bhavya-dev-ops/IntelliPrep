@@ -4,6 +4,7 @@ export interface UserMetadata {
   id: string;
   name: string;
   role: 'student' | 'teacher';
+  study_time_seconds?: number;
 }
 
 export async function getUserData(userId: string): Promise<UserMetadata | null> {
