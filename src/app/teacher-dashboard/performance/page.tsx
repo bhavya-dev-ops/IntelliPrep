@@ -39,12 +39,16 @@ export default function ClassPerformancePage() {
     setDistribution(dist);
   };
 
+  const [isReady, setIsReady] = useState(false);
+
   useEffect(() => {
     setMounted(true);
     async function init() {
       const { data } = await supabase.from('profiles').select('*');
       if (data) calculateMetrics(data);
       setLoading(false);
+      // Small delay to ensure container width is calculated
+      setTimeout(() => setIsReady(true), 200);
     }
 
     init();
@@ -110,9 +114,10 @@ export default function ClassPerformancePage() {
            <p className="text-slate-400 text-xs mt-1">Student counts categorized by SDE-1 Readiness scores.</p>
         </div>
         <CardBody className="p-10">
-           <div className="h-[350px]">
-              <ResponsiveContainer width="100%" height="100%">
-                 <BarChart data={distribution}>
+           <div className="h-[350px] w-full min-w-0">
+              {isReady && (
+                <ResponsiveContainer width="100%" height="100%">
+                   <BarChart data={distribution}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                     <XAxis dataKey="range" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 'bold'}} />
                     <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 'bold'}} />
@@ -124,6 +129,7 @@ export default function ClassPerformancePage() {
                     </Bar>
                  </BarChart>
               </ResponsiveContainer>
+              )}
            </div>
         </CardBody>
       </Card>

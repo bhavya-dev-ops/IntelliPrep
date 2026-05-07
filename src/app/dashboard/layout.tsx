@@ -8,6 +8,7 @@ import IntiChat from '@/components/ai/IntiChat';
 import { Share2, Check } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import Link from 'next/link';
+import { NotificationsMenu } from '@/components/layout/NotificationsMenu';
 
 export default function DashboardLayout({
   children,
@@ -49,11 +50,7 @@ export default function DashboardLayout({
               {copied ? 'Copied!' : 'Share Profile'}
             </button>
 
-            <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-            </button>
+            <NotificationsMenu />
             <Link 
               href="/profile" 
               className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-black shadow-lg hover:scale-110 transition-all border-2 border-white cursor-pointer group relative"

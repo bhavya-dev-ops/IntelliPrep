@@ -45,59 +45,43 @@ export default function IntiChat() {
     setInput('');
     setIsTyping(true);
 
-    // SIMULATED AI LOGIC (Inti's Brain)
-    setTimeout(() => {
-      const lowerInput = input.toLowerCase();
-      
-      const RESPONSE_POOLS = {
-        leetcode: [
-          "Your LeetCode stats are looking good, but I recommend focusing on 'Sliding Window' patterns today. It's a top-tier interview favorite.",
-          "Consistency is key! Even if you solve just 1 Medium problem today, it keeps your momentum alive.",
-          "I've audited your logic DNA. You should try solving 'Number of Islands' to strengthen your DFS understanding.",
-          "Recruiters love seeing a high Medium/Hard ratio. Try pushing yourself beyond Easy problems this week!"
-        ],
-        github: [
-          "Your commit history is professional. Try adding a detailed 'System Architecture' section to your top repository's README.",
-          "Recruiters love documentation. Make sure your latest MERN project has a clear setup guide and API documentation.",
-          "I see you haven't committed in 2 days. A small update to your personal portfolio will keep your GitHub heatmap glowing!",
-          "Quality over quantity! Ensure your latest 3 repos have clean code and meaningful commit messages."
-        ],
-        placement: [
-          "Product companies are currently hiring for Backend roles. I suggest spending 30 minutes on 'Low Level Design' (LLD) today.",
-          "Your SDE-1 Readiness is trending up. Aim for 85% to unlock the 'Top Tier' referral tier in my analytics.",
-          "Placement season is approaching. It's time to start refining your 'Impact Statements' for your resume.",
-          "I recommend practicing 'Mock Interviews' with a friend. Your technical logic is solid, now we need to polish your communication."
-        ],
-        general: [
-          "I'm currently auditing your entire SDE-1 profile. You're making excellent progress compared to the class average!",
-          "Let's focus on one goal today: Complete one high-impact task and sync your progress. I'm here to track it.",
-          "Great to see you active! Remember, a 1% daily improvement leads to a 37x improvement in a year.",
-          "I've identified a small gap in your System Design knowledge. Shall I suggest some materials from your Skill Repository?",
-          "How's the focus today? I'm ready to audit any new commits or solves you've completed."
-        ]
-      };
+    // REAL AI LOGIC (Calling our secure API route)
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: messages.map(m => ({
+            role: m.sender === 'user' ? 'user' : 'assistant',
+            content: m.text
+          })).concat({ role: 'user', content: input })
+        })
+      });
 
-      let pool = RESPONSE_POOLS.general;
-      if (lowerInput.includes('leetcode') || lowerInput.includes('logic') || lowerInput.includes('solve')) {
-        pool = RESPONSE_POOLS.leetcode;
-      } else if (lowerInput.includes('github') || lowerInput.includes('repo') || lowerInput.includes('commit') || lowerInput.includes('project')) {
-        pool = RESPONSE_POOLS.github;
-      } else if (lowerInput.includes('placement') || lowerInput.includes('job') || lowerInput.includes('career') || lowerInput.includes('interview')) {
-        pool = RESPONSE_POOLS.placement;
-      }
+      const data = await response.json();
 
-      const randomResponse = pool[Math.floor(Math.random() * pool.length)];
+      if (data.error) throw new Error(data.error);
 
       const intiMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        text: randomResponse,
+        id: Date.now().toString(),
+        text: data.text,
         sender: 'inti',
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, intiMsg]);
+    } catch (error) {
+      console.error('Chat Error:', error);
+      const errorMsg: Message = {
+        id: Date.now().toString(),
+        text: "I'm having trouble connecting to my logic core. Please check your connection or try again later.",
+        sender: 'inti',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMsg]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   return (

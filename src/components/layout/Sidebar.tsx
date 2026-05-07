@@ -18,13 +18,20 @@ export const Sidebar: React.FC = () => {
     { name: 'Notes', href: '/dashboard/notes', icon: '📝' },
     { name: 'A.I Report', href: '/dashboard/reports', icon: '🤖' },
     { name: 'Placement Sync', href: '/dashboard/leetcode', icon: '🚀' },
+    { name: 'My Quizzes', href: '/dashboard/quiz', icon: '🧠' },
+    { name: 'My Marks', href: '/dashboard/marks', icon: '💯' },
     { name: 'Profile', href: '/profile', icon: '👤' },
   ];
 
   const teacherItems = [
     { name: 'Student Analytics', href: '/teacher-dashboard/analytics', icon: '📊' },
+    { name: 'Manage Resources', href: '/teacher-dashboard/materials', icon: '📚' },
     { name: 'Class Performance', href: '/teacher-dashboard/performance', icon: '📈' },
-    { name: 'Review Inbox', href: '/teacher-dashboard/reviews', icon: '📥' },
+    { name: 'AI Quiz Gen', href: '/teacher-dashboard/quiz', icon: '🤖' },
+    { name: 'Marks Management', href: '/teacher-dashboard/marks', icon: '📝' },
+    { name: 'Student CGPA', href: '/teacher-dashboard/cgpa', icon: '🎓' },
+    { name: 'Student Inbox', href: '/teacher-dashboard/reviews', icon: '📥' },
+    { name: 'Sent Messages', href: '/teacher-dashboard/messages', icon: '📨' },
   ];
 
   const isTeacherRoute = pathname.startsWith('/teacher-dashboard');

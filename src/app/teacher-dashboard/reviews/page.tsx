@@ -3,8 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { Card, CardBody } from '@/components/ui/Card';
-import { Inbox, Zap, ArrowRight, Clock, UserCheck, RefreshCw } from 'lucide-react';
+import { Inbox, Zap, ArrowRight, Clock, UserCheck, RefreshCw, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
+import { sendNotification } from '@/lib/notifications';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Activity {
   id: string;
@@ -18,21 +20,53 @@ interface Activity {
   study_time_seconds: number;
 }
 
-export default function ReviewInboxPage() {
+export default function StudentInboxPage() {
+  const { userData } = useAuth();
+  const [messagingStudent, setMessagingStudent] = useState<Activity | null>(null);
+  const [messageText, setMessageText] = useState('');
+  const [sending, setSending] = useState(false);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchLatestActivity = async () => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .order('updated_at', { ascending: false })
-      .limit(10);
+  const handleSendMessage = async () => {
+    if (!messageText.trim() || !messagingStudent) return;
+    setSending(true);
+    try {
+      await sendNotification(
+        messagingStudent.id,
+        userData?.name || 'Instructor',
+        messageText
+      );
+      setMessagingStudent(null);
+      setMessageText('');
+      alert('Message sent successfully!');
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || 'Failed to send message.');
+    } finally {
+      setSending(false);
+    }
+  };
 
-    if (!error && data) {
+  const fetchLatestActivity = async () => {
+    const [{ data: profiles }, { data: usersData }] = await Promise.all([
+      supabase.from('profiles').select('*').order('updated_at', { ascending: false }).limit(10),
+      supabase.from('users').select('id, name')
+    ]);
+
+    if (profiles) {
+      // Merge real name
+      const mergedData = profiles.map(p => {
+        const u = usersData?.find(u => u.id === p.id);
+        return {
+          ...p,
+          real_name: u?.name || null
+        };
+      });
+
       // DEDUPLICATION: Only show the latest activity for each unique student
       const uniqueMap = new Map();
-      data.forEach(item => {
+      mergedData.forEach(item => {
         const key = item.leetcode_username || item.github_username || item.name || item.id;
         if (!uniqueMap.has(key)) {
           uniqueMap.set(key, item);
@@ -72,7 +106,7 @@ export default function ReviewInboxPage() {
       <header className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-            <Inbox className="text-primary" /> Review & Audit Inbox
+            <Inbox className="text-primary" /> Student Inbox
           </h1>
           <p className="text-slate-500 mt-1 font-medium">Real-time sync activity from the entire class.</p>
         </div>
@@ -94,7 +128,7 @@ export default function ReviewInboxPage() {
                 <div className="flex items-center gap-8 flex-1">
                   <div className="relative">
                     <div className="w-16 h-16 rounded-3xl bg-slate-900 flex items-center justify-center text-xl font-bold text-white shadow-xl shadow-slate-900/20">
-                      {(item.name || item.full_name || item.leetcode_username)?.[0]?.toUpperCase()}
+                      {(item.real_name || item.name || item.full_name || item.leetcode_username)?.[0]?.toUpperCase()}
                     </div>
                     <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full border-4 border-white flex items-center justify-center">
                        <UserCheck size={10} className="text-white" />
@@ -102,7 +136,7 @@ export default function ReviewInboxPage() {
                   </div>
                   <div>
                     <h3 className="font-black text-slate-900 text-lg flex items-center gap-2">
-                      {item.name || item.full_name || item.leetcode_username}
+                      {item.real_name || item.name || item.full_name || item.leetcode_username}
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">({item.leetcode_username})</span>
                     </h3>
                     <p className="text-slate-500 text-sm mt-1 leading-relaxed">
@@ -128,6 +162,13 @@ export default function ReviewInboxPage() {
                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Readiness</p>
                      <p className={`text-2xl font-black ${item.sde_readiness < 30 ? 'text-rose-500' : 'text-emerald-500'}`}>{item.sde_readiness}%</p>
                   </div>
+                  <button 
+                    onClick={() => setMessagingStudent(item)}
+                    className="p-4 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-2xl transition-colors border-2 border-transparent hover:border-blue-100"
+                    title="Send Personal Message"
+                  >
+                    <MessageSquare size={20} />
+                  </button>
                   <Link 
                     href="/teacher-dashboard/analytics" 
                     className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-black text-xs flex items-center gap-3 hover:bg-primary transition-all active:scale-95 shadow-xl shadow-slate-900/20"
@@ -145,6 +186,36 @@ export default function ReviewInboxPage() {
                <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Waiting for Class Activity...</p>
             </div>
           )}
+        </div>
+      )}
+
+      {messagingStudent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-[2rem] shadow-2xl p-8 max-w-md w-full">
+             <h3 className="text-xl font-black text-slate-900 mb-2">Message {messagingStudent.name || messagingStudent.leetcode_username}</h3>
+             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Direct Notification</p>
+             <textarea 
+               value={messageText}
+               onChange={e => setMessageText(e.target.value)}
+               placeholder="Type your feedback or instructions here..."
+               className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-primary outline-none resize-none h-32 mb-6"
+             />
+             <div className="flex gap-4 justify-end">
+                <button 
+                  onClick={() => { setMessagingStudent(null); setMessageText(''); }}
+                  className="px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleSendMessage}
+                  disabled={sending || !messageText.trim()}
+                  className="px-6 py-3 bg-primary text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                >
+                  {sending ? 'Sending...' : 'Send Message'}
+                </button>
+             </div>
+          </div>
         </div>
       )}
     </div>

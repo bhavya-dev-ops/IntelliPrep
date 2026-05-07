@@ -3,13 +3,19 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
-import { Users, Target, Zap, AlertCircle, TrendingUp } from 'lucide-react';
+import { Users, Target, Zap, AlertCircle, TrendingUp, MessageSquare } from 'lucide-react';
+import { sendNotification } from '@/lib/notifications';
+import { useAuth } from '@/hooks/useAuth';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, 
   Tooltip, ResponsiveContainer, Cell 
 } from 'recharts';
 
 export default function TeacherDashboardPage() {
+  const { userData } = useAuth();
+  const [messagingStudent, setMessagingStudent] = useState<any>(null);
+  const [messageText, setMessageText] = useState('');
+  const [sending, setSending] = useState(false);
   const [stats, setStats] = useState({
     totalStudents: 0,
     avgScore: 0,
@@ -49,9 +55,34 @@ export default function TeacherDashboardPage() {
     setLoading(false);
   };
 
+  const [isReady, setIsReady] = useState(false);
+
+  const handleSendMessage = async () => {
+    if (!messageText.trim() || !messagingStudent) return;
+    setSending(true);
+    try {
+      await sendNotification(
+        messagingStudent.id,
+        userData?.name || 'Instructor',
+        messageText
+      );
+      setMessagingStudent(null);
+      setMessageText('');
+      alert('Message sent successfully!');
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || 'Failed to send message.');
+    } finally {
+      setSending(false);
+    }
+  };
+
   useEffect(() => {
     setMounted(true);
-    fetchDashboardData();
+    fetchDashboardData().then(() => {
+      // Small delay to ensure container width is calculated
+      setTimeout(() => setIsReady(true), 200);
+    });
 
     // REAL-TIME SUBSCRIPTION
     const channel = supabase
@@ -132,9 +163,10 @@ export default function TeacherDashboardPage() {
              <h2 className="text-xl font-black text-slate-900">Class Performance Overview</h2>
           </CardHeader>
           <CardBody className="p-8">
-             <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                   <BarChart data={distribution}>
+             <div className="h-64 w-full min-w-0">
+                {isReady && (
+                  <ResponsiveContainer width="100%" height="100%">
+                     <BarChart data={distribution}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                       <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 10, fontWeight: 'bold'}} />
                       <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 10, fontWeight: 'bold'}} />
@@ -145,7 +177,8 @@ export default function TeacherDashboardPage() {
                          ))}
                       </Bar>
                    </BarChart>
-                </ResponsiveContainer>
+                 </ResponsiveContainer>
+                )}
              </div>
           </CardBody>
         </Card>
@@ -170,7 +203,16 @@ export default function TeacherDashboardPage() {
                             <p className="text-[10px] font-bold text-rose-400 uppercase">Readiness: {student.sde_readiness}%</p>
                          </div>
                       </div>
-                      <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></div>
+                      <div className="flex items-center gap-3">
+                         <button 
+                           onClick={() => setMessagingStudent(student)}
+                           className="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
+                           title="Send Personal Message"
+                         >
+                           <MessageSquare size={16} />
+                         </button>
+                         <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></div>
+                      </div>
                    </li>
                 ))}
                 {atRiskStudents.length === 0 && (
@@ -183,6 +225,35 @@ export default function TeacherDashboardPage() {
           </CardBody>
         </Card>
       </div>
+      {messagingStudent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-[2rem] shadow-2xl p-8 max-w-md w-full">
+             <h3 className="text-xl font-black text-slate-900 mb-2">Message {messagingStudent.name || messagingStudent.leetcode_username}</h3>
+             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Direct Notification</p>
+             <textarea 
+               value={messageText}
+               onChange={e => setMessageText(e.target.value)}
+               placeholder="Type your feedback or instructions here..."
+               className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-primary outline-none resize-none h-32 mb-6"
+             />
+             <div className="flex gap-4 justify-end">
+                <button 
+                  onClick={() => { setMessagingStudent(null); setMessageText(''); }}
+                  className="px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleSendMessage}
+                  disabled={sending || !messageText.trim()}
+                  className="px-6 py-3 bg-primary text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                >
+                  {sending ? 'Sending...' : 'Send Message'}
+                </button>
+             </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

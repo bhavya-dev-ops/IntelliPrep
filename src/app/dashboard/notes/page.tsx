@@ -175,41 +175,8 @@ export default function NotesPage() {
           </div>
         </section>
 
-        {/* Teacher Notes Section */}
-        <section className="space-y-6">
-          <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
-            <div className="w-2 h-6 bg-primary rounded-full"></div>
-            <h2 className="text-xl font-bold text-gray-900">Teacher Materials</h2>
-          </div>
-
-          <div className="space-y-4">
-            {loading ? (
-              <div className="animate-pulse space-y-4">
-                <div className="h-32 bg-gray-100 rounded-xl"></div>
-                <div className="h-32 bg-gray-100 rounded-xl"></div>
-              </div>
-            ) : teacherNotes.length === 0 ? (
-              <p className="text-gray-400 italic py-4">No teacher notes available at this time.</p>
-            ) : (
-              teacherNotes.map(note => (
-                <Card key={note.id} className="bg-blue-50/50 border-blue-100 shadow-none">
-                  <CardBody className="p-5">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="bg-primary text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded">Official</span>
-                      <h3 className="font-bold text-lg text-gray-900">{note.title}</h3>
-                    </div>
-                    <p className="text-gray-700">{note.content}</p>
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="text-xs font-medium text-primary">From: {note.teacher_name}</span>
-                      <span className="text-xs text-gray-400">{new Date(note.created_at).toLocaleDateString()}</span>
-                    </div>
-                  </CardBody>
-                </Card>
-              ))
-            )}
-          </div>
-        </section>
       </div>
+
     </div>
   );
 }

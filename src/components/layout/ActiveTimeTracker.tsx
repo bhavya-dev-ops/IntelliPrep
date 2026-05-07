@@ -14,11 +14,11 @@ export function ActiveTimeTracker() {
 
     // 1. Increment local buffer AND live display every second
     const timer = setInterval(() => {
-      // Only count if the tab is actually visible/active
-      if (document.visibilityState === 'visible') {
-        secondsBuffer.current += 1;
-        setLiveSeconds(prev => prev + 1);
-      }
+      // We've relaxed the visibility check to count time as long as the dashboard is open.
+      // This ensures that when students are watching YouTube videos in another tab,
+      // or taking notes, their time is still accurately recorded.
+      secondsBuffer.current += 1;
+      setLiveSeconds(prev => prev + 1);
     }, 1000);
 
     // 2. Save to Supabase every 30 seconds
@@ -30,25 +30,23 @@ export function ActiveTimeTracker() {
         secondsBuffer.current = 0; 
 
         try {
-          // 1. Fetch current time from PROFILES table
+          // 1. Fetch current time from USERS table (matching auth.ts and dashboard)
           const { data, error: fetchError } = await supabase
-            .from('profiles')
+            .from('users')
             .select('study_time_seconds')
             .eq('id', user.id)
             .single();
 
           const newTotal = (Number(data?.study_time_seconds) || 0) + secondsToSave;
 
-          // 2. Save new total to PROFILES table using UPSERT
-          const { error: updateError } = await supabase
-            .from('profiles')
-            .upsert({ 
-              id: user.id, 
-              study_time_seconds: newTotal,
-              updated_at: new Date().toISOString()
-            });
+          // 2. Save new total to BOTH tables to ensure consistency
+          // Student Dashboard reads from 'users', Teacher Dashboard reads from 'profiles'
+          const [res1, res2] = await Promise.all([
+            supabase.from('users').update({ study_time_seconds: newTotal }).eq('id', user.id),
+            supabase.from('profiles').update({ study_time_seconds: newTotal }).eq('id', user.id)
+          ]);
 
-          if (updateError) throw updateError;
+          if (res1.error) throw res1.error;
           
           console.log(`[TimeTracker] Successfully saved! Total: ${newTotal}s`);
           
