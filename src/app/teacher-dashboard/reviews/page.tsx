@@ -12,6 +12,7 @@ interface Activity {
   id: string;
   name: string;
   full_name?: string;
+  real_name?: string | null;
   leetcode_username: string;
   leetcode_solved: number;
   github_repos: number;
