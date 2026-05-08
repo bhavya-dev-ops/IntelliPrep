@@ -1,4 +1,4 @@
-# 🚀 IntelliPrep: AI-Powered Placement Ecosystem
+ 🚀 IntelliPrep: AI-Powered Placement Ecosystem
 
 **IntelliPrep** is a full-stack web application designed for university students to track their placement readiness. It aggregates data from **LeetCode** and **GitHub** into a unified dashboard, providing a "Novelty" metric for SDE-1 readiness.
 
