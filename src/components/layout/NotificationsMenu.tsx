@@ -75,10 +75,10 @@ export function NotificationsMenu() {
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="absolute right-0 mt-2 w-80 bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden z-50 origin-top-right"
+            className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 rounded-[2rem] shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden z-50 origin-top-right"
           >
-            <div className="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-              <h3 className="font-black text-slate-900 text-sm tracking-tight">Notifications</h3>
+            <div className="p-4 bg-slate-50 dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <h3 className="font-black text-slate-900 dark:text-slate-100 text-sm tracking-tight">Notifications</h3>
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{unreadCount} New</span>
             </div>
             
@@ -89,14 +89,14 @@ export function NotificationsMenu() {
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">You're all caught up</p>
                 </div>
               ) : (
-                <div className="divide-y divide-slate-50">
+                <div className="divide-y divide-slate-50 dark:divide-slate-800">
                   {notifications.map(notif => (
                     <div 
                       key={notif.id} 
-                      className={`p-4 transition-colors ${notif.is_read ? 'bg-white' : 'bg-blue-50/50'}`}
+                      className={`p-4 transition-colors ${notif.is_read ? 'bg-white dark:bg-slate-900' : 'bg-blue-50/50 dark:bg-blue-900/20'}`}
                     >
                       <div className="flex justify-between items-start mb-1">
-                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                        <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-1">
                           <Info size={10} /> Message from {notif.teacher_name}
                         </span>
                         {!notif.is_read && (
@@ -108,8 +108,8 @@ export function NotificationsMenu() {
                           </button>
                         )}
                       </div>
-                      <p className="text-sm font-medium text-slate-700 leading-relaxed">{notif.message}</p>
-                      <div className="mt-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                      <p className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">{notif.message}</p>
+                      <div className="mt-2 text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                         {new Date(notif.created_at).toLocaleString('en-GB')}
                       </div>
                     </div>

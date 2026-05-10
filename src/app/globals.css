@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Tailwind v4: enable .dark class-based dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #ffffff;
@@ -14,30 +18,27 @@
   --color-secondary: #10B981;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: #ffffff;
+  color: #171717;
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Global Form Input Styles for better visibility */
+/* Dark mode - next-themes adds .dark to <html> */
+html.dark body {
+  background-color: #0a0a0a !important;
+  color: #ededed !important;
+}
+
+/* Global Form Input Styles */
 input, select, textarea {
-  color: #111827 !important; /* Deep black for visibility */
-  background-color: #ffffff !important; /* White background */
+  color: #111827 !important;
+  background-color: #ffffff !important;
 }
 
-/* Dark mode support for inputs */
-@media (prefers-color-scheme: dark) {
-  input, select, textarea {
-    color: #ffffff !important;
-    background-color: #1f2937 !important; /* Dark grey background */
-    border-color: #374151 !important;
-  }
+html.dark input, html.dark select, html.dark textarea {
+  color: #ffffff !important;
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
 }

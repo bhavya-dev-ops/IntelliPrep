@@ -138,8 +138,8 @@ export default function PlacementSyncPage() {
     <div className="space-y-10 pb-20">
       <header className="flex flex-col md:flex-row justify-between items-center gap-6">
         <div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">Placement Sync</h1>
-          <p className="text-slate-500 mt-2 font-medium">Unified engineering profile & professional analytics.</p>
+          <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Placement Sync</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">Unified engineering profile & professional analytics.</p>
         </div>
         <div className="bg-slate-900 p-6 rounded-[2rem] flex items-center gap-6 shadow-xl">
            <div className="text-center">
@@ -217,13 +217,13 @@ export default function PlacementSyncPage() {
 
           {lcStats && (
             <section className="space-y-6">
-              <h3 className="text-xl font-black text-slate-900 flex items-center gap-2"><Zap className="text-amber-500" /> A.I Next Challenges</h3>
+              <h3 className="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2"><Zap className="text-amber-500" /> A.I Next Challenges</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {PROBLEM_POOL.map((p) => (
-                  <Card key={p.id} className="bg-white border-2 border-slate-100 rounded-3xl hover:border-amber-500/20 transition-all">
+                  <Card key={p.id} className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-3xl hover:border-amber-500/20 transition-all">
                     <CardBody className="p-7">
                       <span className="bg-emerald-100 text-emerald-700 text-[8px] font-black px-2 py-1 rounded-full uppercase mb-4 block w-fit">{p.difficulty}</span>
-                      <h4 className="font-black text-slate-900 mb-1">{p.name}</h4>
+                      <h4 className="font-black text-slate-900 dark:text-slate-100 mb-1">{p.name}</h4>
                       <p className="text-slate-500 text-[10px] leading-relaxed mb-6">{p.reason}</p>
                       <button onClick={() => window.open(p.link, '_blank')} className="w-full py-3 bg-slate-900 text-white rounded-xl text-xs font-black flex items-center justify-center gap-2">Start <ExternalLink size={12} /></button>
                     </CardBody>
@@ -235,13 +235,13 @@ export default function PlacementSyncPage() {
 
           {ghStats && (
             <section className="space-y-6">
-              <h3 className="text-xl font-black text-slate-900">🚀 Top Repositories</h3>
+              <h3 className="text-xl font-black text-slate-900 dark:text-white">🚀 Top Repositories</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {ghStats.topRepos.map((repo, i) => (
-                  <Card key={i} className="bg-white border-2 border-slate-100 rounded-3xl">
+                  <Card key={i} className="bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-3xl">
                     <CardBody className="p-7 flex flex-col justify-between h-full">
-                      <div><div className="flex justify-between mb-4"><h4 className="font-black text-slate-900">{repo.name}</h4><span className="text-amber-500 font-bold text-xs">⭐ {repo.stars}</span></div><p className="text-slate-500 text-xs line-clamp-2">{repo.description}</p></div>
-                      <div className="mt-6 flex items-center justify-between"><span className="text-[10px] font-black text-blue-500 uppercase">{repo.language}</span><a href={repo.url} target="_blank" className="text-xs font-black text-slate-900 underline">View</a></div>
+                      <div><div className="flex justify-between mb-4"><h4 className="font-black text-slate-900 dark:text-slate-100">{repo.name}</h4><span className="text-amber-500 font-bold text-xs">⭐ {repo.stars}</span></div><p className="text-slate-500 dark:text-slate-400 text-xs line-clamp-2">{repo.description}</p></div>
+                      <div className="mt-6 flex items-center justify-between"><span className="text-[10px] font-black text-blue-500 uppercase">{repo.language}</span><a href={repo.url} target="_blank" className="text-xs font-black text-slate-900 dark:text-white underline">View</a></div>
                     </CardBody>
                   </Card>
                 ))}

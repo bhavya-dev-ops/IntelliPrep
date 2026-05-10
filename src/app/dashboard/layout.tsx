@@ -10,6 +10,8 @@ import { useAuth } from '@/hooks/useAuth';
 import Link from 'next/link';
 import { NotificationsMenu } from '@/components/layout/NotificationsMenu';
 
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
+
 export default function DashboardLayout({
   children,
 }: {
@@ -36,20 +38,21 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 flex transition-colors duration-300">
       <ActiveTimeTracker />
       <Sidebar />
       <div className="flex-1 lg:ml-64 flex flex-col transition-all duration-300">
-        <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-end px-6 shadow-sm sticky top-0 z-30">
+        <header className="h-16 bg-white dark:bg-slate-950 border-b border-gray-100 dark:border-slate-800 flex items-center justify-end px-6 shadow-sm sticky top-0 z-30 transition-colors duration-300">
           <div className="flex items-center gap-4">
             <button 
               onClick={handleShare}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all active:scale-95 group shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-slate-900 dark:hover:bg-slate-700 hover:text-white transition-all active:scale-95 group shadow-sm"
             >
               {copied ? <Check size={14} className="text-emerald-500" /> : <Share2 size={14} className="group-hover:rotate-12 transition-transform" />}
               {copied ? 'Copied!' : 'Share Profile'}
             </button>
 
+            <ThemeToggle />
             <NotificationsMenu />
             <Link 
               href="/profile" 

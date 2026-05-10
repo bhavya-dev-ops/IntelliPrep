@@ -40,7 +40,7 @@ export const Sidebar: React.FC = () => {
     <>
       {/* Mobile Menu Button */}
       <button 
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-white border shadow-sm text-gray-600"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-white dark:bg-slate-800 border dark:border-slate-700 shadow-sm text-gray-600 dark:text-slate-300"
         onClick={() => setIsOpen(!isOpen)}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,8 +57,8 @@ export const Sidebar: React.FC = () => {
       )}
 
       {/* Sidebar Component */}
-      <aside className={`fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-100 shadow-sm z-40 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="h-20 flex items-center px-6 border-b border-gray-100">
+      <aside className={`fixed top-0 left-0 h-full w-64 bg-white dark:bg-slate-950 border-r border-gray-100 dark:border-slate-800 shadow-sm z-40 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="h-20 flex items-center px-6 border-b border-gray-100 dark:border-slate-800">
           <Link href="/">
             <Logo />
           </Link>
@@ -77,8 +77,8 @@ export const Sidebar: React.FC = () => {
                     onClick={() => setIsOpen(false)}
                     className={`px-4 py-3 rounded-lg transition-colors flex items-center gap-3 ${
                       isActive 
-                        ? 'bg-blue-50 text-primary font-medium' 
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-primary'
+                        ? 'bg-blue-50 dark:bg-blue-900/30 text-primary dark:text-blue-400 font-medium' 
+                        : 'text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800/50 hover:text-primary dark:hover:text-blue-300'
                     }`}
                   >
                     <span>{item.icon}</span> {item.name}
@@ -98,8 +98,8 @@ export const Sidebar: React.FC = () => {
                     onClick={() => setIsOpen(false)}
                     className={`px-4 py-3 rounded-lg transition-colors flex items-center gap-3 ${
                       isActive 
-                        ? 'bg-emerald-50 text-emerald-600 font-medium' 
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-emerald-600'
+                        ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-medium' 
+                        : 'text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800/50 hover:text-emerald-600 dark:hover:text-emerald-400'
                     }`}
                   >
                     <span>{item.icon}</span> {item.name}
@@ -110,10 +110,10 @@ export const Sidebar: React.FC = () => {
           )}
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 dark:border-slate-800">
           <button 
             onClick={() => signOut()} 
-            className="w-full flex items-center gap-3 text-gray-600 hover:text-red-500 px-4 py-2 transition-colors focus:outline-none"
+            className="w-full flex items-center gap-3 text-gray-600 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 px-4 py-2 transition-colors focus:outline-none"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
